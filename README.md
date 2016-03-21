@@ -1,5 +1,6 @@
-# Webpack+Vue在多页面项目下的配置
+# 在多页面项目下使用Webpack+Vue
 
+---
 
 ## 前言
 
@@ -9,7 +10,7 @@ webpack+vue能很好的完成单页面应用的开发，官方也提供了很多
 
  - 在每个业务模块下会有很多页面，每个页面都是一个文件夹，所需的资源文件也都放在这个文件夹下
  - 采用vue + es6的方式进行组件模块化开发
- - 生成自动引用webpack打包好的jsw文件到项目需要的目录
+ - 生成自动引用webpack打包好的js文件到项目需要的目录
  - 具有良好的开发支持，拥有如sourseMap，vue模块的热替换
 
 下面是我们项目的目录结构
@@ -19,6 +20,9 @@ webpack+vue能很好的完成单页面应用的开发，官方也提供了很多
     ├─Application (thinkphp后台配置下的结构,可以结合自己项目做修改)
     │  └─Home
     │      └─View (线上用户访问的.html目录)
+    │         └─index (生成的一个模块）
+    │             ├─index.html (同一模块的模板放在一个模块目录下)
+    │             └─info.html
     ├─Public (线上资源文件目录)
     │  ├─css
     │  ├─imgs
@@ -85,6 +89,7 @@ new Vue({
 ```
 
 ## Webpack配置文件
+下面是webpack的配置文件webpack.config.js，其中用注释指出了关键配置。
 
 ```
 var path = require('path');
@@ -203,7 +208,8 @@ for (var pathname in pages) {
   module.exports.plugins.push(new HtmlWebpackPlugin(conf));
 }
 
-// 根据项目具体需求，输出正确的js和html路径
+// 根据项目具体需求，具体可以看上面的项目目录，输出正确的js和html路径
+// 针对不同的需求可以做修改
 function getEntry(globPath) {
   var entries = {},
     basename, tmp, pathname;
@@ -218,7 +224,7 @@ function getEntry(globPath) {
   return entries;
 ```
 
-运行webpack打包后，可以看到Application/Home/View目录下成功生成了按模块分组的html文件，这正是项目需要的
+使用`npm install`安装相关依赖后，使用`webpack build`打包，可以看到Application/Home/View目录下成功生成了按模块分组的html文件，这正是项目需要的。
 
 如 Application/Home/View/index 下的index.html文件
 
@@ -243,9 +249,10 @@ venders.css和venders.js文件是webpack插件帮我们自动生成的公共样�
 
 总结一下webpack帮我们做了下面几件事
 
- - 使用vue-loader使我们能进行模块组件化开发。
+ - 使用vue-loader使我们能进行组件化开发。
+ - 根据项目需求自动生成按模块分组的html文件。
  - 自动提取样式文件，并和打包后的js文件加入到自动生成的html文件。
- - 将js打包为不同的入口文件，将跨也main公用代码抽离为独立文件。
+ - 将js打包为不同的入口文件，并使用插件抽取公用模块。
  - 为开发调试提供需要的环境，包括热替换，sourceMap。
 
 
