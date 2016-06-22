@@ -98,7 +98,7 @@ var pages = getEntry('./source/**/*.html');
 for (var pathname in pages) {
   // 配置生成的html文件，定义路径等
   var conf = {
-    filename: prod? '../Application/Home/View/' + pathname + '.html' : pathname + '.html',
+    filename: prod? '../Application/Home/View/' + pathname + '.html' : pathname + '.html', // html文件输出路径
     template: pages[pathname], // 模板路径
     inject: true,              // js插入位置
     minify: {

@@ -192,7 +192,7 @@ var pages = getEntry('./source/**/*.html');
 for (var pathname in pages) {
   // 配置生成的html文件，定义路径等
   var conf = {
-    filename: prod? '../Application/Home/View/' + pathname + '.html' : pathname + '.html',
+    filename: prod? '../Application/Home/View/' + pathname + '.html' : pathname + '.html', // html文件输出路径
     template: pages[pathname], // 模板路径
     inject: true,              // js插入位置
     minify: {
@@ -224,9 +224,11 @@ function getEntry(globPath) {
   return entries;
 ```
 
-使用`npm install`安装相关依赖后，使用`webpack build`打包，可以看到Application/Home/View目录下成功生成了按模块分组的html文件，这正是项目需要的。
+使用`npm install`安装相关依赖后，使用`webpack build`或`npm build`打包，可以看到Application/Home/View目录下成功生成了按模块分组的html文件，这正是项目需要的。
 
 如 Application/Home/View/index 下的index.html文件
+
+开发环境中使用`npm dev`命令，访问 localhost:8080/View/index/index.html 可以得到webpack-dev-server开发服务器下的其中一个页面，由于支持热替换，修改源代码可以看到页面发生了变化
 
 ```
 <!DOCTYPE html>
