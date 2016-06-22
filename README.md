@@ -224,11 +224,9 @@ function getEntry(globPath) {
   return entries;
 ```
 
-使用`npm install`安装相关依赖后，使用`webpack build`或`npm build`打包，可以看到Application/Home/View目录下成功生成了按模块分组的html文件，这正是项目需要的。
+使用`npm install`安装相关依赖后，使用`webpack build`或`npm run build`打包，可以看到Application/Home/View目录下成功生成了按模块分组的html文件，这正是项目需要的。
 
 如 Application/Home/View/index 下的index.html文件
-
-开发环境中使用`npm dev`命令，访问 localhost:8080/View/index/index.html 可以得到webpack-dev-server开发服务器下的其中一个页面，由于支持热替换，修改源代码可以看到页面发生了变化
 
 ```
 <!DOCTYPE html>
@@ -246,6 +244,8 @@ function getEntry(globPath) {
 ```
 
 venders.css和venders.js文件是webpack插件帮我们自动生成的公共样式模块和公共js模块。打开页面，还能看到其他资源文件也都被正确处理了。
+
+开发环境中使用`npm run dev`命令，访问 localhost:8080/View/index/index.html 可以得到webpack-dev-server开发服务器下的其中一个页面，由于支持热替换，修改源代码可以看到页面发生了变化
 
 ## 总结
 
