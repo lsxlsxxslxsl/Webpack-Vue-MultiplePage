@@ -1,23 +1,21 @@
 # 在多页面项目下使用Webpack+Vue
 
----
-
 ## 前言
 
-webpack+vue能很好的完成单页面应用的开发，官方也提供了很多例子和教程。但使用webpack能不能用到多页面项目中，同时又能使用vue进行模块组件化开发呢？
+webpack + vue 能很好的完成单页面应用的开发，官方也提供了很多例子和教程。但使用 webpack 能不能用到多页面项目中，同时又能使用 vue 进行模块组件化开发呢？
 
 这里将结合具体的项目，说明一下我是如何配置的。我们希望能在项目里做到
 
  - 在每个业务模块下会有很多页面，每个页面都是一个文件夹，所需的资源文件也都放在这个文件夹下
- - 采用vue + es6的方式进行组件模块化开发
- - 生成自动引用webpack打包好的js文件到项目需要的目录
- - 具有良好的开发支持，拥有如sourseMap，vue模块的热替换
+ - 采用 vue + es6 的方式进行组件模块化开发
+ - 生成自动引用 webpack 打包好的 js 文件到项目需要的目录
+ - 具有良好的开发支持，拥有如 sourseMap，vue 组件的热替换
 
 下面是我们项目的目录结构
 
 ## 项目目录结构
-
-    ├─Application (thinkphp后台配置下的结构,可以结合自己项目做修改)
+```
+    ├─Application (thinkphp 配置下的结构,可以结合自己项目做修改)
     │  └─Home
     │      └─View (线上用户访问的.html目录)
     │         └─index (生成的一个模块）
@@ -50,35 +48,36 @@ webpack+vue能很好的完成单页面应用的开发，官方也提供了很多
             │  └─static
             └─info
                └─info.html
+```
 
 ## 页面文件
 
 每个页面都是一个文件夹，所需的资源文件也都放在这个文件夹下，不需要这个页面时，也只需要删除这个文件夹。
 
-下面是index模块下的index页面
+下面是 index 模块下的 index 页面
 
-```
+``` html
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <title>index - Vue Webpack Example</title>
-    <!-- webpack会将入口JS文件引入的CSS或者vue组件中的css生成style标签或者生成独立的css文件并使用Link标签加载它 -->
+    <!-- webpack 会将入口 JS 文件引入的 CSS 或者 vue 组件中的 css 生成 style 标签或者生成独立的 css 文件并使用 Link 标签加载它 -->
   </head>
   <body>
     <app></app>
-    <!-- webpack的HtmlWebpackPlugin插件会根据入口JS文件生成script标签并插入在这里或实现按需加载 -->
+    <!-- webpack 的 HtmlWebpackPlugin 插件会根据入口JS文件生成 script 标签并插入在这里或实现按需加载 -->
   </body>
 </html>
 ```
 
-上面是index页面的html模板，我们无需引入任何css和js，webpack会自动帮我打包引入。
+上面是 index 页面的 html 模板，我们无需引入任何 css 和 js ，webpack 会自动帮我打包引入。
 
-其中的app标签是我们的vue组件，webpack的加载器会帮我们处理js文件中引入的vue组件,这样就能正确处理这个标签。
+其中的 app 标签是我们的 vue 组件，webpac k的加载器会帮我们处理 js 文件中引入的 vue 组件,这样就能正确处理这个标签。
 
-下面index页面对应的js入口文件
+下面 index 页面对应的 js 入口文件
 
-```
+``` js
 import Vue from 'vue'
 import App from './app'
 
@@ -88,27 +87,27 @@ new Vue({
 })
 ```
 
-## Webpack配置文件
-下面是webpack的配置文件webpack.config.js，其中用注释指出了关键配置。
+## Webpack 配置文件
+下面是 webpack 的配置文件 webpack.config.js，其中用注释指出了关键配置。
 
-```
+``` js
 var path = require('path');
 var webpack = require('webpack');
-// 将样式提取到单独的css文件中，而不是打包到js文件或使用style标签插入在head标签中
+// 将样式提取到单独的 css 文件中，而不是打包到 js 文件或使用 style 标签插入在 head 标签中
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-// 生成自动引用js文件的HTML
+// 生成自动引用 js 文件的 HTML
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var glob = require('glob');
 
-var entries = getEntry('./source/**/*.js'); // 获得入口js文件
+var entries = getEntry('./source/**/*.js'); // 获得入口 js 文件
 var chunks = Object.keys(entries);
 
 module.exports = {
   entry: entries,
   output: {
-    path: path.resolve(__dirname, 'Public'), // html,css,js,图片等资源文件的输出路径，将所有资源文件放在Public目录
-    publicPath: '/Public/',                  // html,css,js,图片等资源文件的server上的路径
-    filename: 'js/[name].[hash].js',         // 每个入口js文件的生成配置
+    path: path.resolve(__dirname, 'Public'), // html,css,js,图片等资源文件的输出路径，将所有资源文件放在 Public 目录
+    publicPath: '/Public/',                  // html,css,js,图片等资源文件的 server 上的路径
+    filename: 'js/[name].[hash].js',         // 每个入口 js 文件的生成配置
     chunkFilename: 'js/[id].[hash].js'
   },
   resolve: {
@@ -118,23 +117,23 @@ module.exports = {
     loaders: [
       {
         test: /\.css$/,
-        // 使用提取css文件的插件，能帮我们提取webpack中引用的和vue组件中使用的样式
+        // 使用提取 css 文件的插件，能帮我们提取 webpack 中引用的和 vue 组件中使用的样式
         loader: ExtractTextPlugin.extract('style', 'css')
       },
       {
-        // vue-loader，加载vue组件
+        // vue-loader，加载 vue 组件
         test: /\.vue$/,
         loader: 'vue'
       },
       {
         test: /\.js$/,
-        // 使用es6开发，这个加载器帮我们处理
+        // 使用 es6 开发，这个加载器帮我们处理
         loader: 'babel',
         exclude: /node_modules/
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
-        // 图片加载器，较小的图片转成base64
+        // 图片加载器，较小的图片转成 base64
         loader: 'url',
         query: {
           limit: 10000,
@@ -147,7 +146,7 @@ module.exports = {
     presets: ['es2015'],
     plugins: ['transform-runtime']
   },
-  vue: { // vue的配置
+  vue: { // vue 的配置
     loaders: {
       js: 'babel',
       css: ExtractTextPlugin.extract('vue-style-loader', 'css-loader')
@@ -170,7 +169,7 @@ module.exports.plugins = (module.exports.plugins || []);
 if (prod) {
   module.exports.devtool = 'source-map';
   module.exports.plugins = module.exports.plugins.concat([
-    // 借鉴vue官方的生成环境配置
+    // 借鉴 vue 官方的生成环境配置
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
@@ -190,11 +189,11 @@ if (prod) {
 
 var pages = getEntry('./source/**/*.html');
 for (var pathname in pages) {
-  // 配置生成的html文件，定义路径等
+  // 配置生成的 html 文件，定义路径等
   var conf = {
-    filename: prod? '../Application/Home/View/' + pathname + '.html' : pathname + '.html', // html文件输出路径
+    filename: prod? '../Application/Home/View/' + pathname + '.html' : pathname + '.html', // html 文件输出路径
     template: pages[pathname], // 模板路径
-    inject: true,              // js插入位置
+    inject: true,              // js 插入位置
     minify: {
       removeComments: true,
       collapseWhitespace: false
@@ -204,11 +203,11 @@ for (var pathname in pages) {
     conf.chunks = ['vendors', pathname];
     conf.hash = false;
   }
-  // 需要生成几个html文件，就配置几个HtmlWebpackPlugin对象
+  // 需要生成几个 html 文件，就配置几个 HtmlWebpackPlugin 对象
   module.exports.plugins.push(new HtmlWebpackPlugin(conf));
 }
 
-// 根据项目具体需求，具体可以看上面的项目目录，输出正确的js和html路径
+// 根据项目具体需求，具体可以看上面的项目目录，输出正确的 js 和 html 路径
 // 针对不同的需求可以做修改
 function getEntry(globPath) {
   var entries = {},
@@ -217,18 +216,18 @@ function getEntry(globPath) {
   glob.sync(globPath).forEach(function (entry) {
     basename = path.basename(entry, path.extname(entry));
     tmp = entry.split('/').splice(-3);
-    pathname = tmp.splice(0, 1) + '/' + basename; // 正确输出js和html的路径
+    pathname = tmp.splice(0, 1) + '/' + basename; // 正确输出 js 和 html 的路径
     entries[pathname] = entry;
   });
   console.log(entries);
   return entries;
 ```
 
-使用`npm install`安装相关依赖后，使用`webpack build`或`npm run build`打包，可以看到Application/Home/View目录下成功生成了按模块分组的html文件，这正是项目需要的。
+使用`npm install`安装相关依赖后，使用`webpack build`打包，可以看到 Application/Home/View 目录下成功生成了按模块分组的 html 文件，这正是项目需要的。
 
-如 Application/Home/View/index 下的index.html文件
+如 Application/Home/View/index 下的 index.html 文件
 
-```
+``` html
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -243,18 +242,16 @@ function getEntry(globPath) {
 </html>
 ```
 
-venders.css和venders.js文件是webpack插件帮我们自动生成的公共样式模块和公共js模块。打开页面，还能看到其他资源文件也都被正确处理了。
-
-开发环境中使用`npm run dev`命令，访问 localhost:8080/View/index/index.html 可以得到webpack-dev-server开发服务器下的其中一个页面，由于支持热替换，修改源代码可以看到页面发生了变化
+venders.css 和 venders.js 文件是 webpack 插件帮我们自动生成的公共样式模块和公共 js 模块。打开页面，还能看到其他资源文件也都被正确处理了。
 
 ## 总结
 
-总结一下webpack帮我们做了下面几件事
+总结一下 webpack 帮我们做了下面几件事
 
- - 使用vue-loader使我们能进行组件化开发。
- - 根据项目需求自动生成按模块分组的html文件。
- - 自动提取样式文件，并和打包后的js文件加入到自动生成的html文件。
- - 将js打包为不同的入口文件，并使用插件抽取公用模块。
+ - 使用 vue-loader 使我们能进行组件化开发。
+ - 根据项目需求自动生成按模块分组的 html 文件。
+ - 自动提取样式文件，并和打包后的 js 文件加入到自动生成的 html 文件。
+ - 将 js 打包为不同的入口文件，并使用插件抽取公用模块。
  - 为开发调试提供需要的环境，包括热替换，sourceMap。
 
 
