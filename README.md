@@ -1,4 +1,4 @@
-# 在多页面项目下使用Webpack+Vue
+# 在多页面项目下使用 Webpack + Vue
 
 ## 前言
 
@@ -88,6 +88,26 @@ new Vue({
 ```
 
 ## Webpack 配置文件
+
+### 用法
+
+先说下 demo 的运行命令
+
+``` bash 
+# 首先安装依赖
+npm install
+
+# 开发模式
+# 注意非 Windows 环境在 package.json 将开发模式的命令改成：
+# NODE_ENV=production webpack
+npm run dev
+
+# 打包
+npm run build
+```
+
+### 配置
+
 下面是 webpack 的配置文件 webpack.config.js，其中用注释指出了关键配置。
 
 ``` js
@@ -223,7 +243,19 @@ function getEntry(globPath) {
   return entries;
 ```
 
-使用`npm install`安装相关依赖后，使用`webpack build`打包，可以看到 Application/Home/View 目录下成功生成了按模块分组的 html 文件，这正是项目需要的。
+#### 开发模式
+
+运行 `npm run dev` 开发模式运行 demo
+
+根据 webpack 配置文件中 output 的 publicPath 配置项和 HtmlWebpackPlugin 插件的 filename 配置项
+
+> demo 中 dev 环境下中分别是 /View 和pathname + '.html'
+
+所以 demo 中通过 http://localhost:8080/View/another/index.html 可以访问到 another 模块下的 index 页面
+
+#### 打包
+
+运行 `npm run build` 打包，可以看到 Application/Home/View 目录下成功生成了按模块分组的 html 文件，这正是项目需要的。
 
 如 Application/Home/View/index 下的 index.html 文件
 
