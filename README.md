@@ -98,8 +98,6 @@ new Vue({
 npm install
 
 # 开发模式
-# 注意非 Windows 环境在 package.json 将开发模式的命令改成：
-# NODE_ENV=production webpack
 npm run dev
 
 # 打包
