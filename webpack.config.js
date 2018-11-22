@@ -49,6 +49,9 @@ module.exports = {
       }
     ]
   },
+  externals: {
+    'vue': 'vue'
+  },
   babel: {
     presets: ['es2015'],
     plugins: ['transform-runtime']

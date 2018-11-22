@@ -47,6 +47,7 @@ webpack + vue 能很好的完成单页面应用的开发，官方也提供了很
             │  ├─index.js
             │  └─static
             └─info
+               ├─info.js
                └─info.html
 ```
 
