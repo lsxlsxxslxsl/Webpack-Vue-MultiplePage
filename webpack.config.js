@@ -8,6 +8,8 @@ var VueLoaderPlugin = require('vue-loader/lib/plugin');
 var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 var OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
+var AutoDllPlugin = require('autodll-webpack-plugin');
+
 // 生成自动引用 js 文件的HTML
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var glob = require('glob');
@@ -16,7 +18,10 @@ var entries = getEntry('./source/**/*.js'); // 获得入口 js 文件
 var chunks = Object.keys(entries);
 
 module.exports = {
-  entry: Object.assign(entries),
+  entry: entries,
+  // entry: {
+  //   'index/index': './source/index/index/index.js'
+  // },
   output: {
     path: path.resolve(__dirname, 'Public'), // html, css, js 图片等资源文件的输出路径，将所有资源文件放在 Public 目录
     publicPath: '/Public/',                  // html, css, js 图片等资源文件的 server 上的路径
@@ -70,10 +75,10 @@ module.exports = {
       filename: 'css/[name].css'
     }),
     new VueLoaderPlugin(),
-    new webpack.DllReferencePlugin({
-      context: path.join(__dirname, '.'),  // 与DllPlugin中的那个context保持一致
-      manifest: require('./Public/vendor-manifest.json')
-    }),
+    // new webpack.DllReferencePlugin({
+    //   context: path.join(__dirname, '.'),  // 与DllPlugin中的那个context保持一致
+    //   manifest: require('./Public/vendor-manifest.json')
+    // }),
   ],
   optimization: {
     splitChunks: {
@@ -94,8 +99,8 @@ if (prod) {
   module.exports.devtool = 'source-map';
   module.exports.plugins = module.exports.plugins.concat([
     new CleanWebpackPlugin([
-      path.resolve(__dirname , './Public/js'),
-      path.resolve(__dirname , './Public/css')
+      path.resolve(__dirname, './Public/js'),
+      path.resolve(__dirname, './Public/css')
     ])
   ]);
   module.exports.optimization.minimizer = [
@@ -123,7 +128,7 @@ var pages = getEntry('./source/**/*.html');
 for (var pathname in pages) {
   // 配置生成的 html 文件，定义路径等
   var conf = {
-    filename: prod? '../Application/Home/View/' + pathname + '.html' : pathname + '.html', // html 文件输出路径
+    filename: prod ? '../Application/Home/View/' + pathname + '.html' : pathname + '.html', // html 文件输出路径
     template: pages[pathname], // 模板路径
     inject: true,              // js 插入位置
     minify: {
@@ -138,6 +143,33 @@ for (var pathname in pages) {
   // 需要生成几个 html 文件，就配置几个 HtmlWebpackPlugin 对象
   module.exports.plugins.push(new HtmlWebpackPlugin(conf));
 }
+
+module.exports.plugins.push(new AutoDllPlugin({
+  inject: true, // will inject the DLL bundles to html
+  context: path.join(__dirname, '.'),
+  filename: '[name].dll.js',
+  debug: true,
+  inherit: true,
+  // path: './',
+  plugins: [
+    new UglifyJsPlugin({
+      uglifyOptions: {
+        compress: {
+          warnings: false
+        }
+      },
+      sourceMap: true,
+      parallel: true
+    }),
+    new MiniCssExtractPlugin({
+      filename: '[name].css'
+    })
+  ],
+  entry: {
+    vendor: ['vue/dist/vue.esm.js', 'axios', 'normalize.css']
+    // vendor: ['vue/dist/vue.esm.js', 'axios']
+  }
+}));
 
 // 根据项目具体需求，输出正确的 js 和 html 路径
 function getEntry(globPath) {
