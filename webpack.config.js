@@ -69,17 +69,21 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: 'css/[name].css'
     }),
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+    new webpack.DllReferencePlugin({
+      context: path.join(__dirname, '.'),  // 与DllPlugin中的那个context保持一致
+      manifest: require('./Public/vendor-manifest.json')
+    }),
   ],
   optimization: {
     splitChunks: {
-      cacheGroups: {
-        vendors: {
-          name: 'vendors',
-          chunks: 'all',
-          minChunks: chunks.length, 
-        }
-      }
+      // cacheGroups: {
+      //   vendors: {
+      //     name: 'vendors',
+      //     chunks: 'all',
+      //     minChunks: chunks.length, 
+      //   }
+      // }
     }
   }
 };
