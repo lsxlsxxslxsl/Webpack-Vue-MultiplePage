@@ -1,20 +1,19 @@
 var path = require('path');
-var webpack = require('webpack');
 // 将样式提取到单独的 css 文件中，而不是打包到 js 文件或使用 style 标签插入在 head 标签中
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var VueLoaderPlugin = require('vue-loader/lib/plugin');
 // css、js压缩、优化插件
-var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+var TerserPlugin = require('terser-webpack-plugin');
 var OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
-var AutoDllPlugin = require('autodll-webpack-plugin');
+// var AutoDllPlugin = require('autodll-webpack-plugin');
 
 // 生成自动引用 js 文件的HTML
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var glob = require('glob');
 
-var entries = getEntry('./source/**/*.js'); // 获得入口 js 文件
+var entries = getEntry('./source/**/index.js'); // 获得入口 js 文件
 var chunks = Object.keys(entries);
 
 module.exports = {
@@ -39,6 +38,7 @@ module.exports = {
         test: /\.css$/,
         // 使用提取 css 文件的插件，能帮我们提取 webpack 中引用的和 vue 组件中使用的样式
         use: [
+          // 开发模式下使用 vue-style-loader，以便使用热重载
           process.env.NODE_ENV !== 'production'
             ? 'vue-style-loader'
             : MiniCssExtractPlugin.loader,
@@ -48,10 +48,7 @@ module.exports = {
       {
         // vue-loader，加载 vue 组件
         test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          extractCSS: true
-        }
+        loader: 'vue-loader'
       },
       {
         test: /\.js$/,
@@ -82,13 +79,13 @@ module.exports = {
   ],
   optimization: {
     splitChunks: {
-      // cacheGroups: {
-      //   vendors: {
-      //     name: 'vendors',
-      //     chunks: 'all',
-      //     minChunks: chunks.length, 
-      //   }
-      // }
+      cacheGroups: {
+        vendors: {
+          name: 'vendors',
+          chunks: 'all',
+          minChunks: chunks.length, 
+        }
+      }
     }
   }
 };
@@ -104,12 +101,7 @@ if (prod) {
     ])
   ]);
   module.exports.optimization.minimizer = [
-    new UglifyJsPlugin({ // 压缩js
-      uglifyOptions: {
-        compress: {
-          warnings: false
-        }
-      },
+    new TerserPlugin({ // 压缩js
       cache: true,
       parallel: true
     }),
@@ -144,42 +136,36 @@ for (var pathname in pages) {
   module.exports.plugins.push(new HtmlWebpackPlugin(conf));
 }
 
-module.exports.plugins.push(new AutoDllPlugin({
-  inject: true, // will inject the DLL bundles to html
-  context: path.join(__dirname, '.'),
-  filename: '[name].dll.js',
-  debug: true,
-  inherit: true,
-  // path: './',
-  plugins: [
-    new UglifyJsPlugin({
-      uglifyOptions: {
-        compress: {
-          warnings: false
-        }
-      },
-      sourceMap: true,
-      parallel: true
-    }),
-    new MiniCssExtractPlugin({
-      filename: '[name].css'
-    })
-  ],
-  entry: {
-    vendor: ['vue/dist/vue.esm.js', 'axios', 'normalize.css']
-    // vendor: ['vue/dist/vue.esm.js', 'axios']
-  }
-}));
+// 开发模式下有缓存的情况下，autodll 插件不会生成新的文件，导致 404，生产模式下构建没问题
+// module.exports.plugins.push(new AutoDllPlugin({
+//   inject: true, // will inject the DLL bundles to html
+//   context: path.join(__dirname, '.'),
+//   filename: '[name].dll.js',
+//   debug: true,
+//   inherit: true,
+//   // path: './',
+//   plugins: [
+//     new TerserPlugin({ // 压缩js
+//       cache: true,
+//       parallel: true
+//     }),
+//     new MiniCssExtractPlugin({
+//       filename: '[name].css'
+//     })
+//   ],
+//   entry: {
+//     vendor: ['vue/dist/vue.esm.js', 'axios', 'normalize.css']
+//   }
+// }));
 
 // 根据项目具体需求，输出正确的 js 和 html 路径
 function getEntry(globPath) {
   var entries = {},
-    basename, tmp, pathname;
+    pathname;
 
   glob.sync(globPath).forEach(function (entry) {
-    basename = path.basename(entry, path.extname(entry));
-    tmp = entry.split('/').splice(-3);
-    pathname = tmp.splice(0, 1) + '/' + basename; // 正确输出 js 和 html 的路径
+    // basename = path.basename(entry, path.extname(entry));
+    pathname = entry.split('/').splice(-3, 2).join('/'); // 正确输出 js 和 html 的路径
     entries[pathname] = entry;
   });
   console.log(entries);
