@@ -1,6 +1,6 @@
 # Webpack + Vue 多页面项目升级 Webpack 4 以及打包优化
 
-多页面下的配置过程[传送门](https://github.com/cnu4/Webpack-Vue-MultiplePage/tree/v1)
+> 多页面下使用 webpack + vue 的配置过程的[传送门](https://github.com/cnu4/Webpack-Vue-MultiplePage/tree/v1)
 
 ## 0. 前言
 
@@ -208,7 +208,7 @@ exports.plugins = [
 ];
 ```
 
-### 3.6 提前打包公共代码
+### 3.3 提前打包公共代码
 
 #### DllPlugin
  
@@ -253,7 +253,7 @@ module.exports.plugins.push(new AutoDllPlugin({
 }));
 ```
 
-### 3.7 terser-webpack-plugin
+### 3.4 terser-webpack-plugin
 
 webpack 官方推荐使用的 JS 压缩插件，取代 UglifyJS，大幅提高打包速度
 
