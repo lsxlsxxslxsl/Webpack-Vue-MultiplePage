@@ -1,5 +1,7 @@
 # Webpack + Vue 多页面项目升级 Webpack 4 以及打包优化
 
+多页面下的配置过程[传送门](https://github.com/cnu4/Webpack-Vue-MultiplePage/tree/v1)
+
 ## 0. 前言
 
 早在 2016 年我就发布过一篇关于在多页面下使用 Webpack + Vue 的配置的文章，当时也是我在做自己一个个人项目时遇到的配置问题，想到别人也可能遇到跟我同样的问题，就把配置的思路分享出来了，[传送门](https://github.com/cnu4/Webpack-Vue-MultiplePage/tree/v1)在这里。
