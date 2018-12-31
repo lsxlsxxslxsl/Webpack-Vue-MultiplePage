@@ -1,4 +1,4 @@
-# Webpack + Vue 多页面项目升级 Webpack 4 以及打包优化
+# Webpack + Vue 多页面项目升级 Webpack 4 以及构建速度优化
 
 > 多页面下使用 webpack + vue 的配置过程的[传送门](https://github.com/cnu4/Webpack-Vue-MultiplePage/tree/v1)
 
