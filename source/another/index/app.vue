@@ -1,13 +1,4 @@
-<style>
-body {
-  font: Helvetica, sans-serif;
-  color: #999;
-}
-.logo {
-  width: 40px;
-  height: 40px;
-}
-</style>
+
 
 <template>
   <div>
@@ -26,7 +17,18 @@ export default {
     }
   },
   components: {
-    CompA,
+    CompA
   }
 }
 </script>
+
+<style>
+body {
+  font: Helvetica, sans-serif;
+  color: #666;
+}
+.logo {
+  width: 50px;
+  height: 50px;
+}
+</style>

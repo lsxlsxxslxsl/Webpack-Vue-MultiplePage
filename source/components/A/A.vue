@@ -1,11 +1,4 @@
-<style scoped>
-.container {
-  border: 1px solid #00f;
-}
-.red {
-  color: #f00;
-}
-</style>
+
 
 <template>
   <div class="container">
@@ -22,3 +15,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.container {
+  border: 1px solid #00f;
+}
+.red {
+  color: #f00;
+}
+</style>

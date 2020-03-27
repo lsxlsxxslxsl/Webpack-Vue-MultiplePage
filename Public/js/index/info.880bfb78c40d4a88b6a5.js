@@ -1,2 +1,0 @@
-webpackJsonp([3],[function(e,t,n){"use strict";function p(e){return e&&e.__esModule?e:{default:e}}var a=n(5),u=p(a);new u.default({el:"#app",template:"<p>info page</p>"})}]);
-//# sourceMappingURL=info.880bfb78c40d4a88b6a5.js.map
